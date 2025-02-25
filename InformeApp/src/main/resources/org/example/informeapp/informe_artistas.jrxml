@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="InformeArtistas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <property name="whenNoDataType" value="AllSectionsNoDetail"/>
+
+
+    <parameter name="LOGO" class="java.lang.String"/>
+    <parameter name="ARTIST_ID" class="java.lang.Integer"/>
+
+    <queryString>
+        <![CDATA[SELECT ar.Name AS ArtistName,
+       COALESCE(al.Title, 'Sin álbum') AS AlbumTitle,
+       COALESCE(t.Name, 'Sin pista') AS TrackName
+FROM artists ar
+LEFT JOIN albums al ON ar.ArtistId = al.ArtistId
+LEFT JOIN tracks t ON al.AlbumId = t.AlbumId
+WHERE ar.ArtistId = $P{ARTIST_ID}
+]]>
+    </queryString>
+
+    <field name="ArtistName" class="java.lang.String"/>
+    <field name="AlbumTitle" class="java.lang.String"/>
+    <field name="TrackName" class="java.lang.String"/>
+
+    <title>
+        <band height="80">
+            <textField>
+                <reportElement x="0" y="0" width="400" height="30"/>
+                <textElement>
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Artista: " + $F{ArtistName}]]></textFieldExpression>
+            </textField>
+            <image>
+                <reportElement x="400" y="0" width="100" height="50"/>
+                <imageExpression><![CDATA["logo.png"]]></imageExpression>
+            </image>
+        </band>
+    </title>
+
+    <detail>
+        <band height="20">
+            <textField>
+                <reportElement x="0" y="0" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{AlbumTitle}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="200" y="0" width="300" height="20"/>
+                <textFieldExpression><![CDATA[$F{TrackName}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+</jasperReport>
